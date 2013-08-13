@@ -1,0 +1,54 @@
+#!/bin/sh
+
+PIDFILE="/opt/local/var/run/couchdb/couchdb.pid"
+BINPATH="/opt/local/bin/couchdb -p $PIDFILE"
+
+case "$1" in
+	start)
+		if [ -a $PIDFILE ]
+		then
+			echo "CouchDB is already running"
+		else
+			echo -n "Starting CouchDB... "
+			sudo $BINPATH -b
+			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+		fi
+		;;
+	stop)
+		if [ -a $PIDFILE ]
+		then
+			echo -n "Stopping CouchDB... "
+			sudo $BINPATH -d
+			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+			sudo rm -f $PIDFILE
+		else
+			echo "CouchDB is not running";
+		fi
+		;;
+	reload)
+		if [ -a $PIDFILE ]
+		then
+			echo -n "Killing CouchDB... "
+			sudo $BINPATH -k
+			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+			sudo rm -f $PIDFILE
+		else
+			echo "CouchDB is not running";
+		fi
+		;;
+	restart)
+		$0 stop
+		$0 start
+		;;
+	status)
+		if [ -a $PIDFILE ]; then echo "CouchDB is running"; else echo "CouchDB is not running"; fi;
+		;;
+	*)
+		echo "Available options are:"
+		echo "  start    Tell CouchDB to start"
+		echo "  stop     Tell CouchDB to stop"
+		echo "  die      Tell CouchDB to die a violent death"
+		echo "  status   See whether CouchDB is running or not"
+		exit 1
+		;;
+esac

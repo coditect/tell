@@ -1,0 +1,59 @@
+#!/bin/sh
+
+VERSION=`port select mysql | grep active | grep -o 'mysql[0-9]\{2\}'`
+PIDFILE="/opt/local/var/db/$VERSION/mysqld.pid"
+BINARY="/opt/local/lib/$VERSION/bin/mysqld --user _mysql --pid-file $PIDFILE"
+
+cd /opt/local
+
+case "$1" in
+	start)
+		if [ -a $PIDFILE ]
+		then
+			echo "MySQL is already running"
+		else
+			echo -n "Starting MySQL... "
+			sudo sh -c "$BINARY &> /dev/null &"
+			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+		fi
+		;;
+	stop)
+		if [ -a $PIDFILE ]
+		then
+			echo -n "Stopping MySQL... "
+			sudo kill -TERM `sudo cat $PIDFILE`
+			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+		else
+			echo "MySQL is not running";
+		fi
+		;;
+	restart)
+		$0 stop
+		$0 start
+		;;
+	reload)
+		if [ -a $PIDFILE ]
+		then
+			echo -n "Reloading MySQL permissions... "
+			sudo kill -HUP `sudo cat $PIDFILE`
+			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+		else
+			echo "MySQL is not running"
+		fi
+		;;
+	status)
+		if [ -a $PIDFILE ]; then echo "MySQL is running"; else echo "MySQL is not running"; fi;
+		;;
+	use)
+		sudo port select mysql $2
+		;;
+	*)
+		echo "Available options are:"
+		echo "  start    Tell MySQL to start"
+		echo "  stop     Tell MySQL to stop"
+		echo "  restart  Tell MySQL to restart"
+		echo "  reload   Tell MySQL to reload its permissions"
+		echo "  status   Tell MySQL to report its status"
+		exit 1
+		;;
+esac

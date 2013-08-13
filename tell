@@ -1,0 +1,17 @@
+#!/bin/sh
+
+TELLDIR=/opt/usr/etc/tell.d/
+
+if [ $1 ]
+then
+	if [ -a $TELLDIR$1 ]
+	then
+		$TELLDIR$1 ${@:2}
+	else
+		echo -n "Invalid service.  Available services are: "
+		ls -m $TELLDIR
+	fi
+else
+	echo -n "Available services are: "
+	ls -m $TELLDIR
+fi

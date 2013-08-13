@@ -1,0 +1,54 @@
+#!/bin/sh
+
+VERSION=`port select php | grep active | grep -o '[0-9]\{2\}'`
+BINPATH="/opt/local/sbin/php-fpm$VERSION"
+PIDPATH="/opt/local/var/run/php$VERSION/php-fpm.pid"
+
+case "$1" in
+	start)
+		if [ -a $PIDPATH ]
+		then
+			echo "PHP-FPM is already running"
+		else
+			echo -n "Starting PHP-FPM... "
+			sudo sh -c "$BINPATH &> /dev/null &"
+			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+		fi
+		;;
+	stop)
+		if [ -a $PIDPATH ]
+		then
+			echo -n "Stopping PHP-FPM... "
+			sudo kill -QUIT `cat $PIDPATH`
+			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+		else
+			echo "PHP-FPM is not running";
+		fi
+		;;
+	restart)
+		$0 stop
+		$0 start
+		;;
+	reload)
+		if [ -a $PIDPATH ]
+		then
+			echo -n "Reloading PHP-FPM configuration... "
+			sudo kill -USR2 `cat $PIDPATH`
+			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+		else
+			echo "PHP-FPM is not running";
+		fi
+		;;
+	status)
+		if [ -a $PIDPATH ]; then echo "PHP-FPM is running"; else echo "PHP-FPM is not running"; fi;
+		;;
+	*)
+		echo "Available options are:"
+		echo "  start    Tell PHP-FPM to start"
+		echo "  stop     Tell PHP-FPM to stop"
+		echo "  restart  Tell PHP-FPM to restart"
+		echo "  reload   Tell PHP-FPM to reload its workers and configuration files"
+		echo "  status   See whether PHP-FPM is running or not"
+		exit 1
+		;;
+esac

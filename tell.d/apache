@@ -1,0 +1,3 @@
+#!/bin/sh
+
+sudo /opt/local/apache2/bin/apachectl ${@:1}

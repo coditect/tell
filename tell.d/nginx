@@ -1,0 +1,53 @@
+#!/bin/sh
+
+BINPATH=/opt/local/sbin/nginx
+PIDPATH=/opt/local/var/run/nginx/nginx.pid
+
+case "$1" in
+	start)
+		if [ -a $PIDPATH ]
+		then
+			echo "Nginx is already running"
+		else
+			echo -n "Starting nginx... "
+			sudo $BINPATH
+			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+		fi
+		;;
+	stop)
+		if [ -a $PIDPATH ]
+		then
+			echo -n "Stopping nginx... "
+			sudo kill -TERM `cat $PIDPATH`
+			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+		else
+			echo "Nginx is not running";
+		fi
+		;;
+	restart)
+		$0 stop
+		$0 start
+		;;
+	reload)
+		if [ -a $PIDPATH ]
+		then
+			echo -n "Reloading nginx configuration... "
+			sudo kill -HUP `cat $PIDPATH`
+			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+		else
+			echo "Nginx is not running"
+		fi
+		;;
+	status)
+		if [ -a $PIDPATH ]; then echo "Nginx is running"; else echo "Nginx is not running"; fi;
+		;;
+	*)
+		echo "Available options are:"
+		echo "  start    Tell nginx to start"
+		echo "  stop     Tell nginx to stop"
+		echo "  restart  Tell nginx to restart"
+		echo "  reload   Tell nginx to reload its configuration files"
+		echo "  status   See whether nginx is running or not"
+		exit 1
+		;;
+esac

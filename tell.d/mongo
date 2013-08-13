@@ -1,0 +1,54 @@
+#!/bin/sh
+
+PIDFILE="/opt/local/var/run/mongodb/mongodb.pid"
+BINPATH="/opt/local/bin/mongod --config /opt/local/etc/mongodb/mongo.conf"
+
+case "$1" in
+	start)
+		if [ -a $PIDFILE ]
+		then
+			echo "MongoDB is already running"
+		else
+			echo -n "Starting MongoDB... "
+			sudo $BINPATH
+			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+		fi
+		;;
+	stop)
+		if [ -a $PIDFILE ]
+		then
+			echo -n "Stopping MongoDB... "
+			sudo kill -TERM `cat $PIDFILE`
+			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+			sudo rm -f $PIDFILE
+		else
+			echo "MongoDB is not running";
+		fi
+		;;
+	restart)
+		$0 stop
+		$0 start
+		;;
+	rotate)
+		if [ -a $PIDFILE ]
+		then
+			echo -n "Rotating MongoDB log files... "
+			sudo kill -USR1 `cat $PIDFILE`
+			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+		else
+			echo "MongoDB is not running"
+		fi
+		;;
+	status)
+		if [ -a $PIDFILE ]; then echo "MongoDB is running"; else echo "MongoDB is not running"; fi;
+		;;
+	*)
+		echo "Available options are:"
+		echo "  start    Tell MongoDB to start"
+		echo "  stop     Tell MongoDB to stop"
+		echo "  restart  Tell MongoDB to restart"
+		echo "  rotate   Tell MongoDB to rotate its log files"
+		echo "  status   See whether MongoDB is running or not"
+		exit 1
+		;;
+esac

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+BINPATH=/opt/local/bin/pg_ctl
+DATAPATH=/opt/local/var/db/postgresql92
+LOGPATH=/opt/local/var/log/postgresql92/postgres.log
+
+sudo -u postgres $BINPATH $1 -D $DATAPATH -l $LOGPATH

@@ -20,7 +20,13 @@ case "$1" in
 		then
 			echo -n "Stopping Gearman... "
 			sudo kill -KILL `cat $PIDPATH`
-			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+			if [ "$?" = "0" ];
+			then
+				sudo rm $PIDPATH
+				echo "[1;32mDone[0m";
+			else
+				echo "[1;31mFailed[0m";
+			fi;
 		else
 			echo "Gearman is not running";
 		fi

@@ -1,0 +1,43 @@
+#!/bin/sh
+
+BINPATH="/opt/local/sbin/gearmand"
+LOGPATH="/opt/local/var/log/gearmand.log"
+PIDPATH="/opt/local/var/run/gearmand.pid"
+
+case "$1" in
+	start)
+		if [ -a $PIDPATH ]
+		then
+			echo "Gearman is already running"
+		else
+			echo -n "Starting Gearman... "
+			sudo $BINPATH -d -l $LOGPATH -P $PIDPATH
+			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+		fi
+		;;
+	stop)
+		if [ -a $PIDPATH ]
+		then
+			echo -n "Stopping Gearman... "
+			sudo kill -KILL `cat $PIDPATH`
+			if [ "$?" = "0" ]; then echo "[1;32mDone[0m"; else echo "[1;31mFailed[0m"; fi;
+		else
+			echo "Gearman is not running";
+		fi
+		;;
+	restart)
+		$0 stop
+		$0 start
+		;;
+	status)
+		if [ -a $PIDPATH ]; then echo "Gearman is running"; else echo "Gearman is not running"; fi;
+		;;
+	*)
+		echo "Available options are:"
+		echo "  start    Tell Gearman to start"
+		echo "  stop     Tell Gearman to stop"
+		echo "  restart  Tell Gearman to restart"
+		echo "  status   See whether Gearman is running or not"
+		exit 1
+		;;
+esac

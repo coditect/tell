@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PIDFILE="/opt/local/var/run/mongodb/mongodb.pid"
 BINPATH="/opt/local/bin/mongod --config /opt/local/etc/mongodb/mongo.conf"

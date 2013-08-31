@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 VERSION=`port select php | grep active | grep -o '[0-9]\{2\}'`
 BINPATH="/opt/local/sbin/php-fpm$VERSION"

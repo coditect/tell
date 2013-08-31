@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PIDFILE="/opt/local/var/run/couchdb/couchdb.pid"
 BINPATH="/opt/local/bin/couchdb -p $PIDFILE"

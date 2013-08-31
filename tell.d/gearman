@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 BINPATH="/opt/local/sbin/gearmand"
 LOGPATH="/opt/local/var/log/gearmand.log"

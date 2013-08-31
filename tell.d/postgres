@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 BINPATH=/opt/local/bin/pg_ctl
 DATAPATH=/opt/local/var/db/postgresql92

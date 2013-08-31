@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 BINPATH=/opt/local/sbin/nginx
 PIDPATH=/opt/local/var/run/nginx/nginx.pid

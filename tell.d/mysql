@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 VERSION=`port select mysql | grep active | grep -o 'mysql[0-9]\{2\}'`
 PIDFILE="/opt/local/var/db/$VERSION/mysqld.pid"
